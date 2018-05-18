@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <style>
+        .mole {
+            width: 120px;
+            height: 120px;
+            line-height: 120px;
+            text-align: center;
+            background-image: url(./images/grass-upper.png);
+            background-repeat: no-repeat;
+            background-size: 120px 60px;
+            background-position: top 0;
+            position: relative;
+        }
+
+        .mole::before {
+            content: "";
+            width: 80px;
+            height: 80px;
+            background-image: url(./images/mole-laugh1.png);
+            background-repeat: no-repeat;
+            background-size: 80px 80px;
+            background-position: top 0;
+            position: absolute;
+            top: 40px;
+            left: 20px;
+            opacity: .5;
+            transition: all 1s;
+        }
+
+        .mole::after {
+            content: "";
+            width: 120px;
+            height: 60px;
+            background-image: url(./images/grass-lower.png);
+            background-repeat: no-repeat;
+            background-size: 120px 60px;
+            background-position: top 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+
+
+        .mole.active::before {
+            background-image: url(./images/mole.png);
+            top: 0;
+            opacity: 1;
+            transition: all .3s;
+        }
+
+        .mole.hit::before {
+            background-image: url(./images/mole-thump4.png);
+            top: 40px;
+            opacity: 1;
+            transition: all .2s;
+        }
+
+        .mole::after {
+            content: "";
+            width: 120px;
+            height: 60px;
+            background-image: url(./images/grass-lower.png);
+            background-repeat: no-repeat;
+            background-size: 120px 60px;
+            background-position: top 0;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-8">
+                <div id="playground">
+                </div>
+                <table style="margin-top: 200px; margin-left: 0px;">
+                    <tbody>
+                        <tr>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                            <td>
+                                <div class="mole"></div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-4 mt-6">
+                    <span id="current-score" class="scores">0</span>
+            </br>
+                <button type="button" class="btn btn-primary" id="start">start</button>
+                <button type="button" class="btn btn-primary" id="stop">stop</button>
+            </div>
+        </div>
+
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+    <script>
+        var score;
+        $(function (){
+            score= 0,timer = null;
+            $(".mole").on("click", function () {
+            var $this = $(this);        // this == div.mole
+
+            if ($this.is(".active")) {
+                score += 10;
+                updateScore(score);
+                console.log(score);
+                $this
+                    .removeClass("active")
+                    .addClass("hit");
+            }
+            });
+        })
+
+        function updateScore(score) {
+            $("#current-score").text(score);
+            console.log($("#current-score").text=score);
+        }
+        
+
+        $("#start").click(function () {
+            startGame();
+        });
+
+        $("#stop").click(function () {
+            
+            stopGame();
+        });
+
+        function startGame() {
+            score = 0;
+            $("#current-score").text(score);
+            console.log($("#current-score").text=score);
+            nextMole();
+        }
+        function stopGame() {
+            clearTimeout(timer);
+            $(".mole.active").removeClass("active")
+            $(".mole.hit").removeClass("hit")
+        }
+
+        function nextMole() {
+            var $moles = $(" .mole");
+            console.log($moles)
+            var active = $(" .mole.active").length;
+            var hit = $(" .mole.hit").length;
+            console.log(active)
+            console.log(hit)
+            $moles.removeClass("active").removeClass("hit");
+
+            for (var i = 0; i < 1; i++) {
+                var next = Math.floor(Math.random() * 9);
+                $moles.eq(next).addClass("active");
+            }
+            timer = setTimeout(nextMole, 1500);
+        }
+    </script>
+</body>
+
+</html>

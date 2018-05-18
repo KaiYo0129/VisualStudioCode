@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+      <div class="container">
+          <div class="row mb-3">
+               <div class="offset-1"></div>
+               <div class="col-3 text-right">
+               <p>請選擇轉換方式:</p> 
+          </div>
+          <div class="col-6 text-right">
+
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="radioGroup" id="r1" value="checkedValue" checked> 華氏轉攝氏
+                    </label>
+                </div>
+
+
+                <div class="form-check form-check-inline">
+                    <label class="form-check-label">
+                        <input class="form-check-input" type="radio" name="radioGroup" id="r2" value="checkedValue"> 攝氏轉華氏
+                    </label>
+                </div>
+
+              </div>
+          </div>
+          </div>
+         
+      </div>
+        <div class="container">
+            <div class="row mb-2">
+                <div class="offset-3"></div>
+                <div class="col-2 text-right">
+                    <button type="button" class="btn btn-default btn-sm btn-block">1</button>
+                </div>
+                <div class="col-2 text-center">
+                    <button type="button" class="btn  btn-default btn-sm btn-block">2</button>
+                </div>
+                <div class="col-2 text-left">
+                    <button type="button" class="btn btn-default btn-sm btn-block">3</button>
+                </div>
+            </div>
+            <div class="row mb-2">
+                <div class="offset-3"></div>
+                <div class="col-2 text-right">
+                    <button type="button" class="btn btn-default btn-sm btn-block">4</button>
+                </div>
+                <div class="col-2 text-center">
+                    <button type="button" class="btn  btn-default btn-sm btn-block">5</button>
+                </div>
+                <div class="col-2 text-left">
+                    <button type="button" class="btn btn-default btn-sm btn-block">6</button>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+                <div class="row mb-2">
+                        <div class="offset-3"></div>
+                        <div class="col-2 text-right">
+                            <button type="button" class="btn btn-default btn-sm btn-block">7</button>
+                        </div>
+                        <div class="col-2 text-center">
+                            <button type="button" class="btn  btn-default btn-sm btn-block">8</button>
+                        </div>
+                        <div class="col-2 text-left">
+                            <button type="button" class="btn btn-default btn-sm btn-block">9</button>
+                        </div>
+                    </div>
+        </div>
+        <div class="container">
+                <div class="row mb-5">
+                        <div class="offset-3"></div>
+                        <div class="col-4 text-right">
+                            <button type="button" class="btn btn-default btn-sm btn-block">0</button>
+                        </div>
+                        
+                        <div class="col-2 text-left">
+                            <button type="button" class="btn btn-default btn-sm btn-block">.</button>
+                        </div>
+                    </div>
+        </div>
+        <div class="container">
+            <div class="row mb-3">
+                <div class="offset-2"></div>
+                <div class="col-5">
+                        <div class="input-group mb-3">
+                                <div class="input-group-prepend">
+                                    <span class="input-group-text" id="basic-addon1">請輸入數字:</span>
+                                </div>
+                                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="txtTempC">
+                        </div>
+                    
+                </div>
+                <div class="col-3 text-right">
+                        <button type="button" class="btn btn-primary" id="trans">轉換</button>
+                        <button type="button" class="btn btn-primary " id="cleartxt">清除</button>        
+                </div>
+            </div>
+        </div>
+        <div class="container">
+                <div class="row mb-2">
+                    <div class="offset-2"></div>
+                    <div class="col-8">
+                        <div class="input-group mb-3">
+                            <div class="input-group-prepend">
+                                <span class="input-group-text" id="basic-addon1">結果</span>
+                            </div>
+                            <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="final" readonly>
+                        </div>
+                    </div>
+                </div>
+        </div>
+
+    <!-- Optional JavaScript -->
+    <script>
+        var radio1 = document.getElementById("r1");
+        var radio2 = document.getElementById("r2");
+        var node = document.getElementsByTagName("button");
+        /*for(var i =0;i<document.getElementsByTagName("button").length;i++)
+        {
+            console.log(document.getElementsByTagName("button")[i].innerText);
+        }*/
+        for(var i=0;i<node.length-2;i++)
+        {
+            var button = node[i];
+            button.onclick = function(){
+                var btn = event.srcElement;
+                document.getElementById("txtTempC").value +=btn.innerText;
+            }
+        }
+        
+        var cmdClean = document.getElementById("cleartxt");
+
+        cmdClean.onclick = function(){
+            document.getElementById("txtTempC").value="";
+            
+        }
+
+        var transferTem = document.getElementById("trans");
+        transferTem.onclick = function(){
+            if(r1.checked)
+            {
+                var num = document.getElementById("txtTempC").value;
+                var finalnum = (num-32)/1.8;
+                document.getElementById("final").value = Number.parseFloat(finalnum).toFixed(2);;
+            }
+            else if(r2.checked)
+            {
+                var num = document.getElementById("txtTempC").value;
+                var finalnum = (num*1.8)+32;
+                document.getElementById("final").value =Number.parseFloat(finalnum).toFixed(2); ;
+            }    
+        }
+
+    </script>
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>

@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row mt-4 mb-3">
+            <div class="offset-3"></div>
+            <div class="col-2">
+                <button onclick="StartGame()" type="button" class="btn btn-primary btn-block">開始遊戲</button>
+            </div>
+            <div class="col-2">
+                <button onclick="WatchAns()" type="button" class="btn btn-danger btn-block">看答案</button>
+            </div>
+            <div class="col-2">
+                <button onclick="Quitgame()" type="button" class="btn btn-danger btn-block ">放棄重來</button>
+            </div>
+        </div>
+        <div class="row  mb-3">
+            <div class="offset-3"></div>
+            <div class="col-4">
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text" id="">輸入</span>
+                    </div>
+                    <input id="inputtext" type="text" class="form-control">
+                </div>
+            </div>
+            <div class="col-2">
+                <button onclick="CheckAns()" type="button" class="btn btn-primary btn-block">檢查答案</button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="offset-3"></div>
+            <div class="col-6">
+                遊戲歷程
+                <ul id="list" class="list-group mt-2">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <script>
+        var ans = new Array(4);
+        var count = 0;
+        var input1;
+        function StartGame() {
+
+            for (var i = 0; i < 4; i++) {
+                ans[i] = Math.floor(Math.random() * 10);
+
+                for (var j = 0; j < i; j++) {
+                    if (ans[i] == ans[j] && i != j) {
+                        i--;
+                    }
+                }
+            }
+            console.log("Anser : " + ans[0] + ans[1] + ans[2] + ans[3]);
+        }
+
+        function WatchAns() {
+            //alert(typeof a[0]);
+            if (ans[0] == null) {
+                alert("沒按開始")
+            }
+            else {
+                alert("Anser : " + ans[0] + ans[1] + ans[2] + ans[3]);
+            }
+        }
+
+        function Quitgame()
+        {
+            document.getElementsByTagName("input")[0].value="";
+            StartGame();
+        }
+        function CheckAns() {
+            if (ans[0] == null) {
+                alert("尚未開始遊戲，亂數為空")
+            }
+            else {
+                input1 = document.getElementsByTagName("input");
+                var input2 = ["", "", "", ""];
+                if (input1[0].value.length > 4 || input1[0].value.length < 4) {
+                    alert("enter correct number");
+                }
+                else {
+                    input2 = input1[0].value.split("");
+                    var A = 0, B = 0;
+
+                    var boolinput = true;
+                    for (var checkinput = 0; checkinput < 4; checkinput++) {
+                        for (var checknext = 0; checknext < 4; checknext++) {
+                            if (input2[checkinput] == input2[checknext]) {
+                                if (checkinput != checknext) {
+                                    alert("輸入數字重複，請重新輸入");
+                                    boolinput = false;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!boolinput) {
+                            break;
+                        }
+                    }
+                    if (boolinput) {
+                        for (var i = 0; i < 4; i++) {
+                            for (var j = 0; j < 4; j++) {
+                                if (ans[i] == input2[j]) {
+                                    if (i == j) {
+                                        A++;
+                                    }
+                                    else if (i != j) {
+                                        B++;
+                                    }
+                                }
+                            }
+                        }
+
+                        //alert(A+"A"+B+"B");
+                        var list1 = document.getElementById("list");
+                        var a1 = document.createElement("ans");
+                        if (A == 4) {
+                            a1.className = "badge badge-pill badge-success";
+                        }
+                        else {
+                            a1.className = "badge badge-pill badge-danger";
+                        }
+                        a1.href = "#";
+                        a1.innerText = A + "A" + B + "B";
+                        var li1 = document.createElement("li");
+                        li1.className = "list-group-item";
+                        li1.appendChild(a1);
+                        li1.innerHTML += input2[0] + input2[1] + input2[2] + input2[3];
+                        list1.appendChild(li1);
+                    }
+                }
+
+            }
+
+
+        }
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

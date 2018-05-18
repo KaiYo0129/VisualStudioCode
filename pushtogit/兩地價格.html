@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+</head>
+
+<body>
+
+    <div class="container mt-700px" id="total">
+        <div id="map" style="width:80%;height:400px;"></div>
+        <div class="containter">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>方式</th>
+                        <th>距離</th>
+                        <th>時間</th>
+                        <th>價格</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-XhqHXGKWFanVVi7JdiRRO8hHl44hGEk">
+    </script>
+
+    <script>
+        var map;
+        var marker = null;
+        var center = { lat: 24.7571075, lng: 120.952429 };
+
+        var directionsService = null;
+        var directionsDisplay = null;
+        var point1 = null, point2 = null;
+        window.onload = function () {
+
+            map = new google.maps.Map(
+                document.getElementById('map'), {
+                    center: center,
+                    zoom: 15
+                });
+
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer();
+            directionsDisplay.setMap(map);
+
+            map.addListener("click", function (e) {
+
+                if (point1 != null && point2 != null) {
+                    point1 = null;
+                    point2 = null;
+                }
+
+                if (point1 == null) {
+                    point1 = e.latLng.lat() + ',' + e.latLng.lng();
+                    return;
+                }
+                if (point2 == null) {
+                    point2 = e.latLng.lat() + ',' + e.latLng.lng();
+                }
+
+                console.log(point1);
+                console.log(point2);
+                var car = document.createElement("table");
+                var tbody = document.getElementsByTagName('tbody');
+                if (point1 != null && point2 != null) {
+
+                    // calculate direction for 2 points.
+                    directionsService.route({
+                        origin: point1,
+                        destination: point2,
+                        travelMode: 'DRIVING'
+                    }, function (response, status) {
+                        if (status === 'OK') {
+                            directionsDisplay.setDirections(response);
+                            console.log(response);
+                            var alldistance = 0;
+                            var updistance = 0;
+                            var downdistance = 0;
+                            var money = 0;
+                            var tbody = document.getElementsByTagName('tbody');
+                            var leg = response.routes[0].legs;
+                            for (var index of leg) {
+                                var tr = document.createElement("tr");
+                                var td1 = document.createElement("td");
+                                td1.innerText = 'car';
+                                tr.appendChild(td1);
+                                var td = [];
+                                var count = 0;
+                                for (var i in index) {
+                                    if (i == "distance" || i == "duration") {
+                                        td[count] = document.createElement("td");
+                                        td[count].innerText = index[i].text;
+                                        if (count == 0) {
+                                            alldistance = index[i].value;
+                                        }
+                                        count++;
+                                    }
+                                    if (i == "steps") {
+                                        td[count] = document.createElement("td");
+                                        for (var indexs of index[i]) {
+                                            //console.log(indexs);
+                                            if (indexs.instructions.indexOf("收費路段") > -1) {
+                                                updistance = updistance + indexs.distance.value;
+                                            }
+                                        }
+                                        console.log(alldistance);
+                                        console.log(updistance);
+                                        downdistance = alldistance - updistance;
+                                        console.log(downdistance);
+                                        money = Math.ceil(((alldistance / 1000) * 5) + ((updistance / 1000) * 1.2));
+                                        console.log(money.toFixed(2));
+                                        td[count].innerText = money.toFixed(2) + "元";
+                                        count++;
+                                    }
+                                }
+                                tr.appendChild(td[0]);
+                                tr.appendChild(td[1]);
+                                tr.appendChild(td[2]);
+                                tbody[0].appendChild(tr);
+                            }
+
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+
+
+                    directionsService.route({
+                        origin: point1,
+                        destination: point2,
+                        travelMode: 'DRIVING'
+                    }, function (response, status) {
+                        if (status === 'OK') {
+                            directionsDisplay.setDirections(response);
+                            console.log(response);
+                            var alldistance = 0;
+                            var updistance = 0;
+                            var downdistance = 0;
+                            var money = 85;
+                            var tbody = document.getElementsByTagName('tbody');
+                            var leg = response.routes[0].legs;
+                            for (var index of leg) {
+                                var tr = document.createElement("tr");
+                                var td1 = document.createElement("td");
+                                td1.innerText = 'taxi';
+                                tr.appendChild(td1);
+                                var td = [];
+                                var count = 0;
+                                for (var i in index) {
+                                    if (i == "distance" || i == "duration") {
+                                        td[count] = document.createElement("td");
+                                        td[count].innerText = index[i].text;
+                                        if (count == 0) {
+                                            alldistance = index[i].value;
+                                        }
+                                        count++;
+                                    }
+                                    if (i == "steps") {
+                                        td[count] = document.createElement("td");
+                                        for (var indexs of index[i]) {
+                                            //console.log(indexs);
+                                            if (indexs.instructions.indexOf("收費路段") > -1) {
+                                                updistance = updistance + indexs.distance.value;
+                                            }
+                                        }
+                                        console.log(alldistance);
+                                        console.log(updistance);
+                                        downdistance = alldistance - updistance;
+                                        console.log(downdistance);
+                                        if (alldistance > 1500) {
+                                            money = money + (Math.ceil((alldistance - 1500) / 250) * 5);
+                                        }
+                                        money = money + Math.ceil((updistance / 1000) * 1.2);
+                                        console.log(Math.ceil((updistance / 1000) * 1.2));
+                                        console.log(money.toFixed(2));
+                                        td[count].innerText = money.toFixed(2) + "元";
+                                        count++;
+                                    }
+                                }
+                                tr.appendChild(td[0]);
+                                tr.appendChild(td[1]);
+                                tr.appendChild(td[2]);
+                                tbody[0].appendChild(tr);
+                            }
+
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+
+                    directionsService.route({
+                        origin: point1,
+                        destination: point2,
+                        travelMode: 'TRANSIT'
+                    }, function (response, status) {
+                        if (status === 'OK') {
+                            directionsDisplay.setDirections(response);
+                            console.log(response);
+                            var tbody = document.getElementsByTagName('tbody');
+                            var routes = response.routes[0];
+                            var leg = response.routes[0].legs;
+                            for (var index of leg) {
+                                var tr = document.createElement("tr");
+                                var td1 = document.createElement("td");
+                                var td2 = document.createElement("td");
+                                td1.innerText = 'transit';
+                                if (routes.fare) {
+                                    td2.innerText = routes.fare.value.toFixed(2) + "元";
+                                }
+                                else {
+                                    td2.innerText = "0.00元";
+                                }
+                                tr.appendChild(td1);
+                                var td = [];
+                                var count = 0;
+                                for (var i in index) {
+                                    if (i == "distance" || i == "duration") {
+                                        td[count] = document.createElement("td");
+                                        td[count].innerText = index[i].text;
+                                        count++;
+                                    }
+
+                                }
+                                console.log(td);
+                                tr.appendChild(td[0]);
+                                tr.appendChild(td[1]);
+                                tr.appendChild(td2);
+                                tbody[0].appendChild(tr);
+                            }
+
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+                }
+
+
+
+            });
+            console.log(point1)
+            console.log(point2)
+        }
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

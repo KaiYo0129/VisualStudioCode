@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container">
+        <div id="map" style="width:100%;height:700px;"></div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <button type="button" class="btn btn-primary" id="enter">規劃</button>
+
+            <p class="mt-3">行程表</p>
+        </div>
+        <ul class="list-group list-group-flush" id="plan">
+        </ul>
+    </div>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA-XhqHXGKWFanVVi7JdiRRO8hHl44hGEk">
+    </script>
+    <script>
+        var map;
+        var foodMarker = null;
+        var hotelMarker = null;
+        var playMarker = null;
+        var point1 = null, point2 = null;
+        var directionsService = null;
+        var directionsDisplay = null;
+        var center = { lat: 24.7571075, lng: 120.952429 };
+        var ul = document.getElementById("plan");
+        var waypts = [];
+        var enter = document.getElementById("enter");
+        window.onload = function () {
+            map = new google.maps.Map(
+                document.getElementById('map'),
+                {
+                    center: center,
+                    zoom: 15
+                });
+            directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer({suppressMakers: true});
+            directionsDisplay.setMap(map);
+
+            var foodRequest = new XMLHttpRequest();
+            foodRequest.open("GET", "json/food.json");
+            foodRequest.onload = function () {
+                
+                var items = JSON.parse(this.responseText);
+                for (var item of items) {
+                    foodMarker = new google.maps.Marker(
+                        {
+                            position: { lat: parseFloat(item.location['lat']), lng: parseFloat(item.location['lng']) },
+                            map: map,
+                            icon: "https://png.icons8.com/small/50/000000/food.png",
+                            title: item['name']
+                        });
+                    foodMarker.addListener('click', function (e) {
+                        var li = document.createElement("li");
+                        console.log(e);
+                        console.log(this);
+                        li.innerText = this.title;
+                        //console.log(e);
+                        li.className = "list-group-item";
+                        ul.appendChild(li);
+                        waypts.push(
+                            {
+                                location: new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+                                stopover: true
+                            }
+                        )
+                    });
+                }
+            }
+            foodRequest.send();
+
+            var hotelRequest = new XMLHttpRequest();
+            hotelRequest.open("GET", "json/hotel.json");
+            hotelRequest.onload = function () {
+                var items = JSON.parse(this.responseText);
+                for (var item of items) {
+                    hotelMarker = new google.maps.Marker(
+                        {
+                            position: { lat: parseFloat(item.location['lat']), lng: parseFloat(item.location['lng']) },
+                            map: map,
+                            icon: "https://png.icons8.com/color/50/000000/5-star-hotel.png",
+                            title: item['name']
+                        });
+                    hotelMarker.addListener('click', function (e) {
+                        var li = document.createElement("li");
+                        li.innerText = this.title;
+                        console.log(e);
+                        console.log(this);
+                        li.className = "list-group-item";
+                        ul.appendChild(li);
+                        waypts.push(
+                            {
+                                location: new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+                                stopover: true
+                            }
+                        )
+                    });
+                }
+            }
+            hotelRequest.send();
+
+            var playRequest = new XMLHttpRequest();
+            playRequest.open("GET", "json/play.json");
+            playRequest.onload = function () {
+                var items = JSON.parse(this.responseText);
+                for (var item of items) {
+                    playMarker = new google.maps.Marker(
+                        {
+                            position: { lat: parseFloat(item.location['lat']), lng: parseFloat(item.location['lng']) },
+                            map: map,
+                            icon: "https://png.icons8.com/ios-glyphs/50/000000/slr-camera.png",
+                            title: item['name']
+                        });
+                    playMarker.addListener('click', function (e) {
+                        var li = document.createElement("li");
+                        li.innerText = this.title;//e.Ia.path[1].title
+                        console.log(e);
+                        console.log(this);
+                        li.className = "list-group-item";
+                        ul.appendChild(li);
+                        waypts.push(
+                            {
+                                location: new google.maps.LatLng(e.latLng.lat(), e.latLng.lng()),
+                                stopover: true
+                            }
+                        )
+                    });
+                }
+            }
+            playRequest.send();
+
+
+            enter.onclick = function () 
+            {
+                var temp = [];
+                console.log("length:"+waypts.length)
+                if(waypts.length > 2)
+                {
+                    for(var i=1;i<waypts.length-1;i++)
+                    {
+                        var path = {
+                            location: waypts[i].location,
+                            stopover: true
+                        }
+                        temp.push(path);
+                    }
+                }
+                // calculate direction for 2 points.
+                directionsService.route(
+                    {
+                        origin: waypts[0].location,
+                        destination: waypts[waypts.length - 1].location,
+                        waypoints: temp,
+                        optimizeWaypoints: true,
+                        travelMode: 'WALKING'
+                    }, function (response, status) {
+                        if (status === 'OK') {
+                            directionsDisplay.setDirections(response);
+                            console.log(response);
+                        } else {
+                            window.alert('Directions request failed due to ' + status);
+                        }
+                    });
+
+            }
+
+
+        }
+
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
+<!--<script>
+// download information.
+var request = new XMLHttpRequest();
+        var geocodingAPIRequest = new XMLHttpRequest();
+
+        request.onload = function () {
+            var items = JSON.parse(this.responseText);
+
+            for (var item of items) {
+                var address = item.地址;
+                if (address === '')
+                    continue;
+/*
+                geocodingAPIRequest.onload = function () {
+                    //console.log(this.responseText);
+                    var result = JSON.parse(this.responseText);
+                    console.log(
+                        "address: " + address + 
+                        "lat: " + result.results[0].geometry.location.lat +
+                        "lng: " + result.results[0].geometry.location.lng + "<br />"
+                    );
+                };
+*/
+                
+                geocodingAPIRequest.open('GET', 'https://maps.googleapis.com/maps/api/geocode/json?address=' + address + '&key=AIzaSyAJDrjZJYcb1I6r1_7dWW_m0jj3mDLqRqE', false);
+                geocodingAPIRequest.send();
+
+                var result = JSON.parse(geocodingAPIRequest.responseText);
+                    console.log(
+                        "address: " + address + 
+                        "lat: " + result.results[0].geometry.location.lat +
+                        "lng: " + result.results[0].geometry.location.lng + "<br />"
+                    );
+            }
+        };
+
+        request.open('GET', "http://opendata.hccg.gov.tw/dataset/4e722575-66a2-4af9-b1ff-95c2469331d1/resource/e17629a6-f7fb-4895-9d91-9d8e37d79eae/download/20180307103221255.json");
+        request.send();
+</script>-->

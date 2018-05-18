@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>Title</title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <style>
+        div{
+            font-family: "微軟正黑體";
+        }
+    </style>
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  </head>
+  <body>
+      <div class="container">
+          
+          <div class="row">
+              <div class="col-4">
+                  
+              </div>
+              <div class="col-4 bg-dark">
+                  <div class="row mt-3 mb-3 text-white">
+                      <div class="col text-center">
+                        <h1>終極密碼</h1>
+                      </div>
+                  </div>
+                  <div class="row mb-3 text-white">
+                      <div class="col text-center">
+                        <h2 id="text">1 ~ 100<br/><br/>剩餘 : 10次</h2>
+                        <h3 id="text1" style="background:gray"> &nbsp;</h3>
+                      </div>
+                  </div>
+                  <div class="row mt-5 mb-3 text-white">
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">1</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">2</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">3</button>
+                      </div>
+                  </div>
+                  <div class="row mb-3 text-white">
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">4</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">5</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">6</button>
+                      </div>
+                  </div>
+                  <div class="row mb-3 text-white">
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">7</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">8</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">9</button>
+                      </div>
+                  </div>
+                  <div class="row mb-3 text-white">
+                      <div class="col text-center">
+                          <button onclick="clear()" type="button" class="btn btn-lg btn-outline-danger " style="color:white">✖</button>
+                      </div>
+                      <div class="col text-center">
+                          <button type="button" class="btn btn-lg btn-outline-light rounded-circle">0</button>
+                      </div>
+                      <div class="col text-center">
+                          <button onclick="enter()" type="button" class="btn btn-default btn-lg btn-outline-success" style="color:white">
+                            ↵
+                          </button>
+                      </div>
+                  </div>
+              </div>
+              <div class="col-4">
+                  
+              </div>
+          </div>
+      </div>
+    <script>
+        var answer = Math.floor(Math.random()*100 + 1);
+        console.log(answer);
+        var button = document.getElementsByClassName("rounded-circle");
+        var ans = "";
+        var Max = 100;
+        var Min = 1;
+        var count1 = 10;
+        var countguess = 0;
+
+        for(var i=0;i<button.length;i++)
+        {
+            var btn = button[i];
+            btn.onclick = function(){
+                var check = event.srcElement;
+                ans += check.innerHTML;
+                var text2 = document.getElementById("text1");
+                text2.innerText = ans;
+                //alert(ans);
+            }
+        }
+        
+        function enter(){
+            if(ans>Min && ans<Max)
+            {
+                var tex = document.getElementById("text");
+                if(ans>=answer)
+                {
+                    Max = ans;
+                }
+                else if(ans<=answer)
+                {
+                    Min = ans;
+                }
+                count1--;
+                countguess++;
+                tex.innerHTML = Min + " 到 " + Max + "<br/><br/>" + "次數 : " + count1 +"次";
+                if(ans==answer)
+                {
+                    tex.innerHTML = "恭喜您猜對了!<br/>使用 : "+count2+"次";
+                }
+                if(count1==0)
+                {
+                    tex.innerText = "你輸了~";
+                }
+            }
+            clear();
+        }
+
+        function clear(){
+            ans = "";
+            var text2 = document.getElementById("text1");
+            text2.innerHTML = "<br/>";
+        }
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  </body>
+</html>
