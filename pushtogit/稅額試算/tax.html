@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <title></title>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container">
+        <div class="row ">
+            <div class="col text-center">
+                <h1>稅額試算</h1>
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="input-group mb-3">
+
+                <div class="col-1 mt-2 text-right">
+                    所得淨額
+                </div>
+                <div class="offset-3"></div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" id="">$</span>
+                </div>
+                <input type="text" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" id="inputnumber">
+                <div class="col-3">
+                    <button onclick="tax()" type="button" class="btn btn-primary">轉換</button>
+                </div>
+
+
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="input-group mb-3">
+
+                <div class="col-1 mt-2 text-right">
+                    稅率
+                </div>
+                <div class="offset-3"></div>
+                <input type="text" id="taxrate" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" disabled>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" >%</span>
+                </div>
+                <div class="col-3">
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="input-group mb-3">
+
+                <div class="col-1 mt-2 text-right">
+                    累進差額
+                </div>
+                <div class="offset-3"></div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" >$</span>
+                </div>
+                <input type="text" id="progress" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1" disabled>
+                <div class="col-3">
+
+                </div>
+
+            </div>
+        </div>
+        <div class="row">
+
+            <div class="input-group mb-3">
+
+                <div class="col-1 mt-2 text-right">
+                    應納稅額
+                </div>
+                <div class="offset-3"></div>
+                <div class="input-group-prepend">
+                    <span class="input-group-text" >$</span>
+                </div>
+                <input type="text" id="need" class="form-control" placeholder="" aria-label="" aria-describedby="basic-addon1"  disabled>
+
+                <div class="col-3">
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+
+        var level = 0;
+
+        var rate2 = [
+            {ratenumber:0.05,progressivetax:0},
+            {ratenumber:0.12,progressivetax:37800},
+            {ratenumber:0.20,progressivetax:134600},
+            {ratenumber:0.30,progressivetax:376600},
+            {ratenumber:0.40,progressivetax:829600},
+            {ratenumber:0.45,progressivetax:1345100}
+        ]
+
+        var ratemoney = [
+            0, 540000, 1210000, 2420000, 4530000, 10310000
+        ];
+
+        var progressivetax =0;
+
+        function tax() {
+
+            var x =parseInt(document.getElementById("inputnumber").value);
+            console.log("x="+x+typeof x)
+            for (var i = 0; i < ratemoney.length - 1; i++) {
+                if (ratemoney[i] < x && x <= ratemoney[i + 1]) {
+                    level = i;
+                    break;
+                }
+                else if (x > ratemoney[ratemoney.length-1]) {
+                    
+                    level = ratemoney.length-1;
+                    break;
+                }
+                
+            }
+            console.log("level="+level)
+            var thisprogress = rate2[level].progressivetax;
+            console.log(rate2[level].progressivetax)
+            document.getElementById("progress").value=thisprogress;
+
+            var thisrate = rate2[level].ratenumber;
+            document.getElementById("taxrate").value=thisrate;
+
+            var needpay = (x*thisrate)-thisprogress;
+            console.log(needpay);
+            document.getElementById("need").value=Number.parseFloat(needpay).toFixed(0);
+        }
+    </script>
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
