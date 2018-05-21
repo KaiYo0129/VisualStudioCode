@@ -28,9 +28,10 @@ Tags: one-page, single-page, portfolio, custom-colors, post-formats, responsive,
 
 body {
     background-color: #2B2C30;
-	font-family: 'Ubuntu', 'Arial', sans-serif;
+	/*font-family: 'Ubuntu', 'Arial', sans-serif;*/
     line-height: 1.5;
     color: #ddd;
+    font-family:"Microsoft JhengHei"
 }
 
 ol, ul {
